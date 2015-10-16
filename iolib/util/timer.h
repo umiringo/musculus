@@ -2,7 +2,7 @@
 //  timer.h
 //  musculus/iolib/util
 //
-// 一个观察者模式类
+// 一个观察者模式定时器类
 //
 //  Created by umiringo on 15/7/8.
 //
@@ -29,7 +29,7 @@ public:
 	//观察者基类
 	public:
 		virtual ~Observer() {}
-		virtual void Update() = 0; //
+		virtual void update() = 0; //
 	};
 
 private:
@@ -66,21 +66,21 @@ public:
 	~Timer() {}
 
 public:
-	static void Attach(Observer *ob)
+	static void attach(Observer *ob)
 	{
 		getInstance().push_back(ob);
 	}
-	static void Detach(Observer *ob)
+	static void detach(Observer *ob)
 	{
 		getInstance().erase( std::remove(getInstance().begin(), getInstance().end(), ob), getInstance().end() );
 	}
-	static void Update()
+	static void update()
 	{
 		time_t tmp = time(NULL);
 		if( tmp > now ){ //更新now和now_tv
 			now = tmp;
 			gettimeofday( &now_tv, NULL );
-			std::for_each( getInstance().begin(), getInstance().end(), std::mem_fun(&Observer::Update)); //实际对每个观察者执行了update
+			std::for_each( getInstance().begin(), getInstance().end(), std::mem_fun(&Observer::update)); //实际对每个观察者执行了update
 		}
 	}
 
@@ -93,29 +93,30 @@ public:
 		return now_tv;
 	}
 public:
-	int Elapse() const
+	int elapse() const
 	{
 		return now - t;
 	}
-	int ElapseMS() const
+	int elapseMS() const
 	{
 		return 1000 * (now_tv.tv_sec - tv.tv_sec) + (now_tv.tv_usec - tv.tv_usec)/1000;
 	}
-	timeval Elapse_tv() const
+	timeval elapseTV() const
 	{
 		timeval rst;
 		rst.tv_sec = now_tv.tv_sec - tv.tv_sec - (now_tv.tv_usec >= tv.tv_usec ? 0 : 1);  //根据微秒项修正秒差
 		rst.tv_usec = now_tv.tv_usec - tv.tv_usec + (now_tv.tv_usec >= tv.tv_usec ? 0 : 1000000);
 		return rst;
 	}
-	void Reset()
+	void reset()
 	{
 		t = now;
 		tv.tv_sec = now_tv.tv_sec;
 		tv.tv_usec = now_tv.tv_usec;
 	}
-};
+}; //class Timer
 
 
-};
+}; //namespace MNET
+
 #endif //__TIMER_H__

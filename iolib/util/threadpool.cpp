@@ -1,8 +1,8 @@
 //
-//  itimer.h
+//  threadpool.cpp
 //  musculus/iolib/util
 //
-// 一个观察者模式定时器类
+// 线程池类
 //
 //  Created by umiringo on 15/7/8.
 //
