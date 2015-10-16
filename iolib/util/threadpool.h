@@ -131,14 +131,14 @@ namespace Thread
 
 	private:
 		static TaskQueue sTasks;
-		static Mutex sMutexTasks;
-		static Mutex sMutexThreads;
+		static Mutex sMutexTasks; //添加task的时候的锁
+		static Mutex sMutexThreads; //对进程池操作的锁
 		static Condition sCondThreads;
 		static size_t sThreadCount;
 		static CountMap sThreadCounts;
 		static bool sPriorStrict;
-		static Policy* sPolicy;
-		static void sigusr1_handler( int signum );
+		static Policy* pPolicy;
+		static void sigusr1Handler( int signum );
 
 	public:
 		static void setupDeamon()
@@ -157,7 +157,7 @@ namespace Thread
 
 		static void setPolicy( Policy* policy)
 		{
-			sPolicy = policy;
+			pPolicy = policy;
 		}
 
 		static size_t queueSize()
@@ -175,7 +175,7 @@ namespace Thread
 
 		static void addTask( Routine *task, bool bForced = false )
 		{
-			if( !sPolicy || sPolicy->onAddTask( task, queueSize(), bForced) ){
+			if( !pPolicy || pPolicy->onAddTask( task, queueSize(), bForced) ){
 				{
 					Mutex::Scoped lock(sMutexTasks);
 					sTasks.insert( std::make_pair( task->getPriority(), task) );
@@ -240,7 +240,7 @@ namespace Thread
 
 					{
 						Mutex::Scoped lock(sMutexThreads);
-						size_t tCountWant = sPolicy->onGetThreadCount( nThreadPrior ); //获得这个prior的线程数
+						size_t tCountWant = pPolicy->onGetThreadCount( nThreadPrior ); //获得这个prior的线程数
 						size_t tCountNow = sThreadCounts[ nThreadPrior ]; //获取了当前的线程数量
 						if( tCountNow < tCountWant ){
 							sThreadCounts[ nThreadPrior ]++;
