@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "../util/threadpool.h"
+#include "../util/timer.h"
 
 using namespace MNET;
 
@@ -14,16 +15,25 @@ public:
 
 	virtual void run()
 	{
-		int i = rand();
-		printf("Task %d : %d\n", value, i);
+		time_t i = Timer::getTime();
+		printf("Task %d : %ld\n", value, i);
 		sleep(2);
 		printf("Task %d end\n", value);
 		delete this;
+		return;
 	}
 };
 
+void testThreadPool()
+{
+	for(int i = 0; i < 10; i++){
+		Thread::Pool::addTask(new TestTask(i));
+	}
+}
 int main()
 {
     std::cout << "Test threadpool begin..." << std::endl;
+    testThreadPool();
+    std::cout << "Test threadpool end "<< std::endl;
 	return 1;
 }
