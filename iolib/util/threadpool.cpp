@@ -55,7 +55,7 @@ std::string Thread::Pool::Policy::indentification()
 size_t Thread::Pool::Policy::getThreadCount( int prior )
 {
 	if( stateQuitAtOnce == policyState ) return 0;
-	return std::max( 1, policyThreadCountMap[prior] );
+	return std::max( (size_t)1, policyThreadCountMap[prior] );
 }
 size_t Thread::Pool::Policy::getAllThreadCount() const
 {

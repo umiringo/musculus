@@ -15,7 +15,7 @@ CLEAN += *.o *.app
 all : $(EXES)
 
 thread : $(OBJS) test_threadpool.o
-		 $(LD) $(INCLUDES) $(LDFLAGS) $(OBJS) test_threadpool.o test_threadpool.app
+		 $(LD) $(INCLUDES) $(LDFLAGS) $(OBJS) test_threadpool.o -o test_threadpool.app
 
 clean :
 		rm -rf $(CLEAN)

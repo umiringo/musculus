@@ -1,6 +1,9 @@
 #include <iostream>
-#include "../util/thread.h"
 #include <stdlib.h>
+#include <stdio.h>
+#include "../util/threadpool.h"
+
+using namespace MNET;
 
 class TestTask: public Thread::RunnableTask
 {
@@ -21,5 +24,6 @@ public:
 
 int main()
 {
-	return 1；
+    std::cout << "Test threadpool begin..." << std::endl;
+	return 1;
 }

@@ -94,7 +94,7 @@ namespace Thread
 	public:
 		~SpinLock()
 		{
-			pthread_spin_destory( &spin );
+			pthread_spin_destroy( &spin );
 		}
 
 		explicit SpinLock(const char* id)
@@ -226,7 +226,7 @@ namespace Thread
 			{
 				timeval now;
 				timespec timeout;
-				timezone tz;
+				struct timezone tz;
 				gettimeofday( &now, &tz );
 				timeout.tv_sec = now.tv_sec + nseconds;
 				timeout.tv_nsec = now.tv_usec * 1000;
