@@ -2,3 +2,5 @@
 *.app
 *.so
 *.a
+*.dll
+*.lib
