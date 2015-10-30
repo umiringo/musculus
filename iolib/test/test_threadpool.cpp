@@ -29,6 +29,7 @@ void testThreadPool()
 	for(int i = 0; i < 10; i++){
 		Thread::Pool::addTask(new TestTask(i));
 	}
+    Thread::Pool::start();
 }
 int main()
 {
