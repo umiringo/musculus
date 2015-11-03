@@ -77,9 +77,9 @@ void Thread::Pool::Policy::loadConfig()
 	policyThreadCountMap.clear();
 
 	//加载配置项 TODO，先手动填一些默认值
-	policyThreadCount = 10;
-	policyThreadCountMap[1] = 5;
-	policyThreadCountMap[2] = 5;
+	policyThreadCount = 3;
+	policyThreadCountMap[1] = 2;
+	policyThreadCountMap[2] = 1;
 }
 
 //Thread::Pool function
@@ -113,7 +113,7 @@ Thread::RunnableTask* Thread::Pool::fetchTask( int nThreadPrior )
 		Thread::RunnableTask * pTask = NULL;
 		if( !taskQueue.empty() ){
 			TaskQueue::iterator it = taskQueue.lower_bound( nThreadPrior ); //取个差不多的就行了
-			if( it != taskQueue.end() ){ //没找到
+			if( it ==  taskQueue.end() ){ //没找到
 				it = taskQueue.begin(); //直接取第一个
 			}
 			pTask = it->second;
@@ -138,6 +138,8 @@ void * Thread::Pool::routine( void* pParam)
 	while(1)
 	{
 		try{
+        while(1)
+        {
 			RunnableTask* pTask = fetchTask( nThreadPrior );
 			if( pTask ){
 				try{
@@ -167,7 +169,8 @@ void * Thread::Pool::routine( void* pParam)
 
 				if( NULL == pTask )
 					condThread.wait( mutexThread ); //线程进入等待
-			}
+		    }
+        }
 		} catch(...) { continue; } //出现异常则跳过继续
 		break;
 	}

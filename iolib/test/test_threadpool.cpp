@@ -20,8 +20,22 @@ public:
 		sleep(2);
 		printf("Task %d end\n", value);
 		delete this;
-		return;
 	}
+};
+
+class TestAddTask : public Thread::RunnableTask
+{
+    size_t count;
+public:
+    TestAddTask(size_t c) : Thread::RunnableTask(), count(c)
+    {}
+
+    virtual void run()
+    {
+        std::cout << "Add Task" << std::endl;
+        Thread::Pool::addTask(new TestTask(10));
+        delete this;
+    }
 };
 
 void testThreadPool()
