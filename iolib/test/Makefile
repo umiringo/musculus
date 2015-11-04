@@ -1,25 +1,19 @@
 #Makefile
 
-TOP_SRCDIR = ..
-UTIL_DIR = $(TOP_SRCDIR)/util
-LD = g++ -g -ggdb
-CC = g++ -Wall -c -g -ggdb
-DEFINES += -Wall -D_GNU_SOURCE
-LDFLAGS += -pthread
-INCLUDES += -I$(UTIL_DIR)
-OBJS += $(UTIL_DIR)/threadpool.o $(UTIL_DIR)/itimer.o $(UTIL_DIR)/timer.o
+TOP_DIR = ../..
 
-EXES = thread
+include ../../mk/global_def.mk
+
+OBJS = test_threadpool.o
+
+EXES = test_thread
 
 CLEAN += *.o *.app
 
 all : $(EXES)
 
-thread : $(OBJS) test_threadpool.o
-		 $(LD) $(INCLUDES) $(LDFLAGS) $(OBJS) test_threadpool.o -o test_threadpool.app
+test_thread : $(IOLIB_OBJ) $(OBJS)
+		 $(LD) $(INCLUDES) $(LDFLAGS) $(IOLIB_OBJ) $(OBJS) -o test_threadpool.app
 
-%.o: %.cpp
-	 $(CC) $< -o $@
-clean :
-		rm -rf $(CLEAN)
-		rm -rf $(UTIL_DIR)/$(CLEAN)
+
+include ../../mk/global_rule.mk
