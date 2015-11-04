@@ -1,6 +1,5 @@
 $(IOLIB_OBJ) : %.o: %.cpp
 	$(CC) -c $(DEFINES) $(INCLUDES) $(CCFLAGS) $< -o $@
-
 .c.o:
 	$(CC) -c $(DEFINES) $(INCLUDES) $(CCFLAGS) $< -o $@
 .cpp.o:

@@ -13,7 +13,7 @@ CLEAN += *.o *.app
 all : $(EXES)
 
 test_thread : $(IOLIB_OBJ) $(OBJS)
-		 $(LD) $(INCLUDES) $(LDFLAGS) $(IOLIB_OBJ) $(OBJS) -o test_threadpool.app
+		 $(LD) $(INCLUDES) $(LDFLAGS) -L$(TPLIB_DIR) $(IOLIB_OBJ) $(OBJS) -o test_threadpool.app -ljson
 
 
 include ../../mk/global_rule.mk
