@@ -83,7 +83,7 @@ namespace Thread
 			inline void setMaxQueueSize( size_t taskQueueSize);
 			inline CountMap& getPolicyThreadCountMap(); //得到计数map引用
 
-			virtual std::string indentification();
+			virtual std::string identification();
 			virtual size_t getThreadCount( int prior ); //返回某prior的线程数
 			virtual size_t getAllThreadCount() const; //返回线程数量
 			virtual bool onAddTask( Thread::RunnableTask* pTask, size_t qSize, bool bForced); //增加task之后的后续处理

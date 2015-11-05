@@ -6,5 +6,8 @@
     "habbit" : {
             "name" : "hejing",
             "avatar" : "lover"
+    },
+    "ThreadPool" : {
+            "Threads":"(1,2)(2,3)(100,1)"
     }
 }

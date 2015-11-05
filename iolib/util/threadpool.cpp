@@ -10,6 +10,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <algorithm>
+#include <iostream>
+#include "jsonconf.h"
 
 #include "threadpool.h"
 #include "itimer.h"
@@ -48,9 +50,9 @@ Thread::Pool::CountMap& Thread::Pool::Policy::getPolicyThreadCountMap()
 {
 	return policyThreadCountMap;
 }
-std::string Thread::Pool::Policy::indentification()
+std::string Thread::Pool::Policy::identification()
 {
-	return "MusculusThreadPool";
+	return "ThreadPool";
 }
 size_t Thread::Pool::Policy::getThreadCount( int prior )
 {
@@ -73,13 +75,54 @@ bool Thread::Pool::Policy::onAddTask( Thread::RunnableTask* pTask, size_t qSize,
 }
 void Thread::Pool::Policy::loadConfig()
 {
+    JsonConf *conf = JsonConf::getInstance();
+    JsonConf::SectionType section = identification();
+    size_t size;
 	policyThreadCount = 0;
 	policyThreadCountMap.clear();
 
-	//加载配置项 TODO，先手动填一些默认值
-	policyThreadCount = 3;
-	policyThreadCountMap[1] = 2;
-	policyThreadCountMap[2] = 1;
+    std::string threadConf = conf->find(section, "Threads");
+    if( threadConf.length() > 1023){
+        threadConf = "(0,1)(1,2)(2,1)(3,1)";
+    } else if( threadConf.length() == 0){
+        threadConf = "(0,1)(1,2)(2,1)(3,1)";
+    }
+
+    char buffer[1024] = {0};
+    strncpy( buffer, threadConf.c_str(), threadConf.length());
+    buffer[sizeof(buffer) - 1] = 0;
+    char *cur = buffer;
+    char *token = strchr( cur, '(' );
+    while( NULL != token ){
+        cur = token + 1;
+        token = strchr( cur, ',' );
+        if( NULL == token ) break;
+        *token = 0;
+        int prior = atol(cur);
+
+        cur = token + 1;
+        token = strchr( cur, ')' );
+        if( NULL == token ) break;
+        *token = 0;
+        size_t priorSize = atol(cur);
+        policyThreadCountMap[prior] = priorSize;
+        policyThreadCount += priorSize;
+
+        cur = token +1;
+        token = strchr( cur, '(' );
+    }
+
+
+    priorStrict = atoi(conf->find(section, "priorStrict").c_str());
+    if( priorStrict ){
+        if( policyThreadCountMap[100] < 1){
+            std::cout << "Warning : no thread of prior 100" << std::endl;
+        }
+    }
+    if(size = atoi(conf->find(section, "maxQueueSize").c_str())){
+        maxTaskQueueSize = size;
+    }
+    maxTaskQueueSize = 1048576;
 }
 
 //Thread::Pool function
@@ -224,6 +267,7 @@ void Thread::Pool::start( Policy* policy, bool wReturn)
 
 		pthread_t th;
 		CountMap& cMap = pPolicy->getPolicyThreadCountMap();
+        std::cout << "ThreadPool prior->size : ";
 		for(CountMap::const_iterator it = cMap.begin(); it != cMap.end(); ++it){
 			int prior = it->first;
 			size_t size = it->second;
@@ -234,8 +278,12 @@ void Thread::Pool::start( Policy* policy, bool wReturn)
 			if(size > 0){
 				threadCountMap[prior] = size;
 				allThreadCount += size;
+                std::cout << prior << " -> "<< size << " | ";
 			}
 		}
+
+        std::cout << "\nAll Thread Number : " << allThreadCount << std::endl;
+        std::cout << "ThreadPool Start!" << std::endl;
 	}
 
 	if(wReturn) return; //主线程退出

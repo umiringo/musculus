@@ -79,7 +79,6 @@ int main()
     }
     std::cout << name << std::endl;
 
-    return 1;
 
     std::cout << "Test threadpool begin..." << std::endl;
     testThreadPool();
