@@ -123,7 +123,7 @@ namespace Thread
 				sl->lock();
 			}
 		};
-	};
+	}; //class SpinLock
 
 	class RWLock //读写锁
 	{
@@ -164,37 +164,37 @@ namespace Thread
 		{
 			pthread_rwlock_unlock( &locker );
 		}
-	};
+        class WRScoped
+        {
+            private:
+                RWLock *rw;
+            public:
+                ~WRScoped()
+                {
+                    rw->unLock();
+                }
+                explicit WRScoped( RWLock &l ) : rw(&l)
+            {
+                rw->wrLock();
+            }
+        }; //class WRScoped
 
-	class WRScoped
-	{
-	private:
-		RWLock *rw;
-	public:
-		~WRScoped()
-		{
-			rw->unLock();
-		}
-		explicit WRScoped( RWLock &l ) : rw(&l)
-		{
-			rw->wrLock();
-		}
-	};
+        class RDScoped
+        {
+            private:
+                RWLock *rw;
+            public:
+                ~RDScoped()
+                {
+                    rw->unLock();
+                }
+                explicit RDScoped( RWLock &l ) : rw(&l)
+            {
+                rw->rdLock();
+            }
+        }; //class RDScoped
 
-	class RDScoped
-	{
-	private:
-		RWLock *rw;
-	public:
-		~RDScoped()
-		{
-			rw->unLock();
-		}
-		explicit RDScoped( RWLock &l ) : rw(&l)
-		{
-			rw->rdLock();
-		}
-	};
+	}; //class RWLock
 
 	class Condition
 	{

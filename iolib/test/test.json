@@ -2,5 +2,9 @@
     "address" : {
             "name" : "chenyan",
              "phone" : "123"
+    },
+    "habbit" : {
+            "name" : "hejing",
+            "avatar" : "lover"
     }
 }

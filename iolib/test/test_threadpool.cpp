@@ -1,11 +1,11 @@
 #include <iostream>
 #include <fstream>
-#include <string>
+#include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "../util/threadpool.h"
-#include "../util/timer.h"
-#include "json/json.h"
+#include "threadpool.h"
+#include "timer.h"
+#include "jsonconf.h"
 
 using namespace MNET;
 
@@ -51,21 +51,34 @@ void testThreadPool()
 
 int main()
 {
-    std::cout << "Test Json file..." << std::endl;
-    std::ifstream ifs;
-    ifs.open("test.json");
-    
-    Json::Reader reader;
-    Json::Value root;
-    if( !reader.parse(ifs, root, false)){
-        std::cout << "Parse json failed !" << std::endl;
+    {
+        std::cout << "Test Json file..." << std::endl;
+        std::ifstream ifs;
+        ifs.open("test.json");
+
+        Json::Reader reader;
+        Json::Value root;
+        if( !reader.parse(ifs, root, false)){
+            std::cout << "Parse json failed !" << std::endl;
+            return -1;
+        }
+        std::cout << root["address"]["name"].asString() << std::endl;
+    }
+    Json::Value value; 
+    if(!JsonConf::digConfFromFile("test.json", "address", "name", value)){
+        std::cout << "Dig json failed !" <<std::endl;
         return -1;
     }
-    Json::Value addValue = root["address"];
-    std::string sName = addValue["name"].asString();
-    std::string sPhone = addValue["phone"].asString();
-    std::cout << "Name : " << sName << std::endl;
-    std::cout << "Phone : " << sPhone << std::endl;
+    
+    std::cout << "Test conf..." << std::endl;
+    JsonConf::getInstance("test.json");
+    std::string name = JsonConf::getInstance()->find("address", "name");
+    if( name.empty() ){
+        std::cout << "no such key!" << std::endl;
+        return -1;
+    }
+    std::cout << name << std::endl;
+
     return 1;
 
     std::cout << "Test threadpool begin..." << std::endl;
