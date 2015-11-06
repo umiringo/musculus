@@ -1,5 +1,6 @@
 #include "jsonconf.h"
 #include <iostream>
+#include "logging/logger.h"
 
 namespace MNET
 {
@@ -22,14 +23,13 @@ void JsonConf::reLoad()
         }
         
         if( !ifs.is_open() ){
-            std::cout << "open error! " << std::endl;
+            Logger::file()->error("json file open failed! {}", fileName);
             return;
         }
         Json::Reader reader;
         Json::Value root;
         if( !reader.parse(ifs, root, false) ){
-            //Error log
-            std::cout << "json file parse error! " << std::endl;
+            Logger::file()->error("json file parse failed! {}", fileName);
             return;
         }
 

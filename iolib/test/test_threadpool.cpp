@@ -6,6 +6,7 @@
 #include "threadpool.h"
 #include "timer.h"
 #include "jsonconf.h"
+#include "logging/logger.h"
 
 using namespace MNET;
 
@@ -51,7 +52,8 @@ void testThreadPool()
 
 int main()
 {
-    {
+    /*
+       
         std::cout << "Test Json file..." << std::endl;
         std::ifstream ifs;
         ifs.open("test.json");
@@ -71,15 +73,17 @@ int main()
     }
     
     std::cout << "Test conf..." << std::endl;
-    JsonConf::getInstance("test.json");
     std::string name = JsonConf::getInstance()->find("address", "name");
     if( name.empty() ){
         std::cout << "no such key!" << std::endl;
         return -1;
     }
     std::cout << name << std::endl;
-
-
+    */
+    JsonConf::getInstance("test.json");
+    Logger::file()->info("Hello Info!");
+    Logger::file()->debug("Hello Debug!");
+    Logger::console()->info("Hello Console!");
     std::cout << "Test threadpool begin..." << std::endl;
     testThreadPool();
     std::cout << "Test threadpool end "<< std::endl;

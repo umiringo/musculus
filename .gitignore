@@ -5,3 +5,6 @@
 *.dll
 *.lib
 !libjson.a
+*.log
+*.txt
+logs/

@@ -15,6 +15,7 @@
 
 #include "threadpool.h"
 #include "itimer.h"
+#include "logging/logger.h"
 
 using namespace std;
 using namespace MNET;
@@ -116,10 +117,10 @@ void Thread::Pool::Policy::loadConfig()
     priorStrict = atoi(conf->find(section, "priorStrict").c_str());
     if( priorStrict ){
         if( policyThreadCountMap[100] < 1){
-            std::cout << "Warning : no thread of prior 100" << std::endl;
+            Logger::file()->warn("pool has no prior 100 thread");
         }
     }
-    if(size = atoi(conf->find(section, "maxQueueSize").c_str())){
+    if( (size = atoi(conf->find(section, "maxQueueSize").c_str())) ){
         maxTaskQueueSize = size;
     }
     maxTaskQueueSize = 1048576;
@@ -131,7 +132,7 @@ void Thread::Pool::sigNullHandler( int signum )
 void Thread::Pool::sigusr1Handler( int signum )
 {
 	if( SIGUSR1 == signum ){
-		//纪录log
+        Logger::file()->info("receive SIGUSR1, program will quit!");
 		//退出
 		pPolicy->onQuit();
 		pPolicy->setState( stateQuitAtOnce );
@@ -267,7 +268,8 @@ void Thread::Pool::start( Policy* policy, bool wReturn)
 
 		pthread_t th;
 		CountMap& cMap = pPolicy->getPolicyThreadCountMap();
-        std::cout << "ThreadPool prior->size : ";
+        
+        Logger::file()->info() << "ThreadPool prior->size : ";
 		for(CountMap::const_iterator it = cMap.begin(); it != cMap.end(); ++it){
 			int prior = it->first;
 			size_t size = it->second;
@@ -278,12 +280,12 @@ void Thread::Pool::start( Policy* policy, bool wReturn)
 			if(size > 0){
 				threadCountMap[prior] = size;
 				allThreadCount += size;
-                std::cout << prior << " -> "<< size << " | ";
+                Logger::file()->debug() << prior << " -> "<< size << " | ";
 			}
 		}
-
-        std::cout << "\nAll Thread Number : " << allThreadCount << std::endl;
-        std::cout << "ThreadPool Start!" << std::endl;
+        
+        Logger::console()->info("All Thread Number : {}", allThreadCount);
+        Logger::console()->info("ThreadPool Start!");
 	}
 
 	if(wReturn) return; //主线程退出

@@ -9,7 +9,7 @@ LD = g++
 
 INCLUDES = -I. -I$(TOP_DIR) -I$(IOLIB_DIR) -I$(TP_DIR)/include -I$(UTIL_DIR)
 
-IOLIB_SRC = $(UTIL_DIR)/timer.cpp $(UTIL_DIR)/itimer.cpp $(UTIL_DIR)/threadpool.cpp $(UTIL_DIR)/jsonconf.cpp
+IOLIB_SRC = $(UTIL_DIR)/timer.cpp $(UTIL_DIR)/itimer.cpp $(UTIL_DIR)/threadpool.cpp $(UTIL_DIR)/jsonconf.cpp $(UTIL_DIR)/logging/logger.cpp
 
 DEFINES = -D_GNU_SOURCE
 CCFLAGS = -Wall -g -ggdb -std=c++11

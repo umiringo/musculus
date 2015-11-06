@@ -8,6 +8,11 @@
             "avatar" : "lover"
     },
     "ThreadPool" : {
-            "Threads":"(1,2)(2,3)(100,1)"
+            "Threads":"(1,2)(2,3)(100,1)",
+            "priorStrict" : "1"
+    },
+    "LogFile" : {
+            "path" : "logs/",
+            "level" : "1"
     }
 }
