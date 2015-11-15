@@ -7,8 +7,25 @@
 #include "timer.h"
 #include "jsonconf.h"
 #include "logging/logger.h"
+#include <map>
 
 using namespace MNET;
+
+
+class Info
+{
+public:
+    int tid;
+    int cash;
+    int amount;
+    int month;
+    int fund;
+    std::string plat;
+    void dump(){
+        std::cout << "tid=" << tid << " cash=" << cash << " amount=" << amount;
+        std::cout << " month="<< month << " fund=" << fund << " plat=" << plat << std::endl;
+    }
+};
 
 class TestTask: public Thread::RunnableTask
 {
@@ -79,7 +96,6 @@ int main()
         return -1;
     }
     std::cout << name << std::endl;
-    */
     JsonConf::getInstance("test.json");
     Logger::file()->info("Hello Info!");
     Logger::file()->debug("Hello Debug!");
@@ -87,5 +103,35 @@ int main()
     std::cout << "Test threadpool begin..." << std::endl;
     testThreadPool();
     std::cout << "Test threadpool end "<< std::endl;
+    */
+    std::cout << "Test json config file..." << std::endl;
+    std::ifstream ifs;
+    ifs.open("configtest.json");
+
+    Json::Reader reader;
+    Json::Value root;
+    if( !reader.parse(ifs, root, false)){
+        std::cout << "Parse json failed!" << std::endl;
+        return -1;
+    }
+    
+    std::map<int, Info*> confMap;
+    Json::Value webshop = root["webshop"];
+     
+    //读取array
+    for( int i = 0; i < webshop.size(); ++i){
+        Info *t = new Info();
+        t->tid = webshop[i]["tid"].asInt();
+        t->cash = webshop[i]["cash"].asInt();
+        t->amount = webshop[i]["amount"].asInt();
+        t->month = webshop[i]["month_week_card"].asInt();
+        t->fund = webshop[i]["fund"].asInt();
+        t->plat = webshop[i]["plat"].asString();
+        confMap.insert( std::make_pair(t->tid, t) );
+    }
+
+    for(std::map<int,Info*>::iterator it = confMap.begin(); it != confMap.end(); ++it){
+        it->second->dump();
+    }
 	return 1;
 }

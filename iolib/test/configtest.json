@@ -1,0 +1,37 @@
+{
+    "webshop" : [
+        {
+            "tid": 1,
+            "cash": 100,
+            "amount": 20,
+            "month_week_card":30,
+            "fund":10,
+            "plat":"xiaomi"
+        },
+        {
+            "tid":2,
+            "cash":200,
+            "amount":40,
+            "month_week_card":7,
+            "fund":10,
+            "plat":"xiaomi"
+        },
+        {
+            "tid":3,
+            "cash":3,
+            "amount":3,
+            "month_week_card":3,
+            "fund":3,
+            "plat":"youku"
+        },
+        {
+            "tid":4,
+            "cash":4,
+            "amount":4,
+            "month_week_card":4,
+            "fund":4,
+            "plat":"youku"
+        }
+    ]
+}
+                
